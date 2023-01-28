@@ -1,0 +1,18 @@
+<script>
+$(document).ready(function(){
+    $(".form-check-input").click(function(){
+        $(this).css("background-color", "green")
+        const questid = $(this).parent().siblings().attr("id")
+        const optionid = this.id
+        // var quest = $(this).parent().siblings("p").html()
+        
+        console.log(questid)
+        console.log(optionid)
+        pollanswer = { 'csrfmiddlewaretoken': $("input[name=csrfmiddlewaretoken]").val(), 'questid':questid, 'optionid':optionid }
+        $.ajax({
+            url: "{% url 'createpoll' %}"
+        });
+});
+});
+      
+</script>

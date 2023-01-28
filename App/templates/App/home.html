@@ -1,0 +1,36 @@
+{% extends 'App/base.html' %}
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center my-2">
+        <div class="col-md-6">
+          <div class="row my-3">
+            <div>
+              {% if messages %}
+            {% for message in messages %}
+               <p {% if message.tags %}class="alert alert-{{message.tags}} mb-5"{% endif %}>{{message}}</p>
+            {% endfor %}
+         {% endif %}
+            </div>
+            <h5>WelCome To Django Poll App</h5>
+          </div>
+            {% for key, ques_choice in dict.items %}
+            <div class=" pollclass px-4 border border-success shadow p-4 bg-light rounded">
+              <form action="" id="id_form{{forloop.counter}}">
+                {% csrf_token %}
+                <p class="fw-bold" id="{{key}}">{{ques_choice.0}}</p>
+                {% for choice in ques_choice.1 %}
+                <div class="form-check mb-2">
+                  <input value="{{choice}}" class="form-check-input" type="radio" name="exampleForm{{key}}" id="{{forloop.counter}}input{{key}}"/>
+                  <label class="form-check-label" for="{{forloop.counter}}input{{key}}">
+                    {{choice}}
+                  </label>
+                </div>
+                {% endfor %}
+              </form>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% include "App/ajaxhome.html" %}
+{% endblock content %}

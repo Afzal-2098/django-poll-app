@@ -1,0 +1,40 @@
+<script>
+    $(document).ready(function(){
+        $("#createbtn").click(function(){
+            output = "";
+            const qus = $("#id_text").val();
+            const opt1 = $("#id_option1").val();
+            const opt2 = $("#id_option2").val();
+            const opt3 = $("#id_option3").val();
+            const opt4 = $("#id_option4").val();
+            if (qus !== "" && opt1 !== "" && opt2 !== "" && opt3 !== "" && opt4 !== "") {
+                polldata = {'csrfmiddlewaretoken': $("input[name=csrfmiddlewaretoken]").val(), 'text':qus, 'option1':opt1, 'option2':opt2, 'option3':opt3, 'option4':opt4 }
+                $.ajax({
+                    url: "{% url 'createpoll' %}",
+                    method: "POST",
+                    data: polldata,
+                    success: function(data){
+                        if (data.status_code == 201) {
+                            console.log(data.createdpolldata);
+                            x = data.createdpolldata
+                            for (let index = 0; index < x.length; index++) {
+                                // len = (index+1)
+                                output += "<div><span><strong>" + (index+1)+":" + " </strong></span><span>"+ x[index].text + "</span></div><hr>"  
+                            }
+                            $("#ques_id").html(output);
+                            $("#id_pollform").trigger("reset");
+                        }
+                        
+                        if (data.status_code == 400) {
+                            console.log(data.msg)
+                        }
+                        
+                    }
+                });
+            }
+            else{
+                console.log("enter all data.");
+            }
+        })
+});
+</script>

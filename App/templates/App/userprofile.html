@@ -1,0 +1,47 @@
+{% extends 'App/base.html' %}
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-sm-8 offset-sm-1">
+        <h3>Welcome <span class="text-capitalize">{{request.user}}</span></h3>
+        </div>
+     <div class="col-sm-8 offset-sm-1">
+        <form>
+            {% for data in userdata %}
+            <fieldset disabled>
+              <div class="mb-3">
+                <label for="disabledTextInput1" class="form-label">Name</label>
+                <input type="text" id="disabledTextInput1" class="form-control" value = "{{data.first_name}} {{data.last_name}}">
+              </div>
+              <div class="mb-3">
+                <label for="disabledTextInput2" class="form-label">Email Address</label>
+                <input type="text" id="disabledTextInput2" class="form-control"value = "{{data.email}}">
+              </div>
+              <div class="mb-3">
+                <label for="disabledNumberInput" class="form-label">Phone Number</label>
+                <input type="Phone" id="disabledNumberInput" class="form-control" value = "{{data.phone}}">
+              </div>
+            </fieldset>
+            {% endfor %}
+          </form>
+     </div>
+     <hr>
+     <div class="row justify-content-center">
+        <div class="col-md-8 offset-sm-1">
+            <h5>Polls Created by you.</h5>
+        </div>
+        <div class="col-sm-8 offset-sm-1">
+            <form>
+                <fieldset disabled>
+                    {% for poll in created_polls %}
+                  <div class="mb-1">
+                    <input type="text" class="form-control" value = "{{poll}}">
+                  </div>
+                  {% endfor %}
+                </fieldset>
+              </form>
+        </div>
+     </div>
+    </div>
+   </div>
+{% endblock content %}

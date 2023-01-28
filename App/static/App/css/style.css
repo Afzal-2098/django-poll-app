@@ -1,0 +1,10 @@
+/* .container-fluid a{
+    color: white;
+} */
+
+/* viewpoll style */
+.row .pollclass{
+    background-color: rgb(240, 246, 240);
+    padding: 1rem;
+    margin: 0 0 1rem 0;
+}

@@ -1,0 +1,32 @@
+{% extends 'App/base.html' %}
+{% block content %}
+<div class="container">
+    <div class="row justifiy-content-around my-3">
+        <div class="col-md-7 shadow p-5">
+            <h3>Create your poll here.</h3>
+            <form action="" method="post" id="id_pollform">
+                {% if messages %}
+                    {% for message in messages %}
+                        <p {% if message.tags %}class="alert alert-{{message.tags}} mb-5"{% endif %}>{{message}}</p>
+                    {% endfor %}
+                {% endif %}
+         {% csrf_token %}
+                {{form}}
+            <input type="button" class="btn btn-success mt-4" id="createbtn" value="Create">
+            </form>
+        </div>
+
+        <div class="col-md-5 shadow p-5">
+            <h5>You Created following Polls.</h5>
+            <hr>
+            <div id="ques_id">
+                {% for allpoll in allpolldata %}
+                <div><span><strong>{{ forloop.counter }}: </strong></span><span>{{allpoll.text}}</span></div>
+                <hr>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% include "App/ajax.html" %}
+{% endblock content %}
