@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import CreatePollForm, UserRegistraionForm
-from .models import Question, Choice, User 
+from .models import Question, Choice, User, Vote 
 from django.http import HttpResponse
 from django.views import View
 from django.contrib import messages
@@ -14,13 +14,36 @@ from django.http import JsonResponse
 # Create your views here.
 @login_required
 def ViewPoll(request):
+    if request.method == "POST":
+        questid = request.POST.get("questid")
+        optval = request.POST.get("optval")
+        requestuser = User.objects.get(username=request.user)
+        quest = Question.objects.get(uid=questid)
+        option = Choice.objects.get(choice_text=optval)
+        # print(requestuser)
+        try:
+            votequery = Vote.objects.filter(user=request.user).get(question=quest)
+        except Vote.DoesNotExist:
+            votequery = None
+            if votequery is None:
+                vote = Vote(user=requestuser, question=quest, choice=option)
+                vote.save()
+                def vote_percentage():
+                    votequeryset = Vote.objects.filter(question=quest)
+                    totalvotes = votequeryset.count()
+                    list_choice = list(Choice.objects.filter(question=quest))
+                    percentage_list = []
+                    for choice in list_choice:
+                        this_count = votequeryset.filter(choice=choice).count()
+                        percentage = int((this_count/totalvotes)*100)
+                        percentage_list.append(percentage)
+                    return percentage_list
+                prcnt = vote_percentage()
+                return JsonResponse({"percentage":prcnt, "status_code":201})
+
     try:
         polls = Question.objects.all()
         dict = {}
-        # print(polls)
-        # print(polls.uid)
-        # for count, poll in enumerate(polls, start=1):
-        
         for poll in polls:
             ques_choice = []
             # print(poll.uid)
@@ -31,17 +54,7 @@ def ViewPoll(request):
             ques_choice.append(poll.text)
             ques_choice.append(choices)
             dict[poll.uid] = ques_choice
-        print(dict)
-
-            # print(str(count)+ "--"+str(poll.uid))
-            # choices = []
-            # choice_queryset = Choice.objects.filter(question=poll.uid)
-            # for obj in choice_queryset:
-            #     choices.append(obj.choice_text)
-            # dict[poll.text] = choice_queryset
-
-
-
+        # print(dict)
         context = {"dict":dict}
         return render(request, "App/home.html", context)
     except Exception as e:
@@ -55,7 +68,7 @@ class UserRegistrationFormView(View):
         return render(request, 'App/userregistration.html', {'form':form})
     def post(self, request):
         form = UserRegistraionForm(request.POST)
-        # print(form)
+        print(form)
         if form.is_valid():
             # print(True)
             messages.success(request, "Congratulations!!! Registered Successfully")

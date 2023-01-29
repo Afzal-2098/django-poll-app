@@ -3,14 +3,23 @@ $(document).ready(function(){
     $(".form-check-input").click(function(){
         $(this).css("background-color", "green")
         const questid = $(this).parent().siblings().attr("id")
-        const optionid = this.id
+        const optval = $(this).val()
         // var quest = $(this).parent().siblings("p").html()
         
         console.log(questid)
-        console.log(optionid)
-        pollanswer = { 'csrfmiddlewaretoken': $("input[name=csrfmiddlewaretoken]").val(), 'questid':questid, 'optionid':optionid }
+        console.log(optval)
+        pollanswer = { 'csrfmiddlewaretoken': $("input[name=csrfmiddlewaretoken]").val(), 'questid':questid, 'optval':optval }
         $.ajax({
-            url: "{% url 'createpoll' %}"
+            url: "{% url 'viewpoll' %}",
+            method: "POST",
+            data: pollanswer,
+            success: function(data){
+                if (data.status_code) {
+                    console.log(data.percentage);
+                    var meradata = $(this).parent().siblings(".votePercent").find(".votePercenChild").val()
+                    console.log(meradata)
+                }
+            }
         });
 });
 });
