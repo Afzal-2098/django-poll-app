@@ -4,10 +4,19 @@ $(document).ready(function(){
         $(this).css("background-color", "green")
         const questid = $(this).parent().siblings().attr("id")
         const optval = $(this).val()
+        const inputdiv = $(this).parent()
+        updateddata = ""
         // var quest = $(this).parent().siblings("p").html()
+        var meradata = $(this).parent().find(".span").css({"visibility": "visible"});
+        // tar = $(this).parent().prev().children()
+        // .children(".span").css({"color":"green"})
+        // tar = $(this).parent().find(".span")
+
         
+        // console.log(tar)
         console.log(questid)
-        console.log(optval)
+        // console.log(optval)
+        // console.log(meradata)
         pollanswer = { 'csrfmiddlewaretoken': $("input[name=csrfmiddlewaretoken]").val(), 'questid':questid, 'optval':optval }
         $.ajax({
             url: "{% url 'viewpoll' %}",
@@ -16,11 +25,27 @@ $(document).ready(function(){
             success: function(data){
                 if (data.status_code) {
                     console.log(data.percentage);
-                    var meradata = $(this).parent().siblings(".votePercent").find(".votePercenChild").val()
-                    console.log(meradata)
-                }
+                    var dict = data.percentage;
+                    for (var key in dict) {
+                        updateddata += '<input class="form-check-input" type="radio"/>'
+                        '<label class="form-check-label">' + {key} +  '<label><span class="span">' + dict[key] + '</span></div>' 
+                    }
+                    // const sib = $(inputdiv)
+                    console.log(inputdiv)
+                    $(inputdiv).html(updateddata)
+                //     $("#questid").map(function() {
+                //         return this.innerHTML;
+                // })
+                // $(this).parent().siblings("p").parent().find("span").css({"color":"red"})
             }
-        });
+            
+        }});
+        // $(this).parent().siblings("p").parent().find("span").css({"color":"red"})
+        // for (let i = 0; i < arr.length; i++) {
+            
+        // }
+        // console.log(arr)
+
 });
 });
       

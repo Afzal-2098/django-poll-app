@@ -9,11 +9,13 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from urllib import parse
 from django.http import JsonResponse
+from .tasks import test_func
 
 
 # Create your views here.
 @login_required
 def ViewPoll(request):
+    # test_func.delay()
     if request.method == "POST":
         questid = request.POST.get("questid")
         optval = request.POST.get("optval")
@@ -28,18 +30,21 @@ def ViewPoll(request):
             if votequery is None:
                 vote = Vote(user=requestuser, question=quest, choice=option)
                 vote.save()
-                def vote_percentage():
-                    votequeryset = Vote.objects.filter(question=quest)
-                    totalvotes = votequeryset.count()
-                    list_choice = list(Choice.objects.filter(question=quest))
-                    percentage_list = []
-                    for choice in list_choice:
-                        this_count = votequeryset.filter(choice=choice).count()
-                        percentage = int((this_count/totalvotes)*100)
-                        percentage_list.append(percentage)
-                    return percentage_list
-                prcnt = vote_percentage()
-                return JsonResponse({"percentage":prcnt, "status_code":201})
+                # def vote_percentage():
+                #     votequeryset = Vote.objects.filter(question=quest)
+                #     totalvotes = votequeryset.count()
+                #     list_choice = list(Choice.objects.filter(question=quest))
+                #     # percentage_list = []
+                #     percentage_dict = {}
+                #     for choice in list_choice:
+                #         this_count = votequeryset.filter(choice=choice).count()
+                #         percentage = int((this_count/totalvotes)*100)
+                #         # percentage_list.append(percentage)
+                #         percentage_dict[choice.choice_text] = percentage
+                #     return percentage_dict
+                # prcnt = vote_percentage()
+                # print(prcnt)
+                return JsonResponse({"status_code":201})
 
     try:
         polls = Question.objects.all()
@@ -55,12 +60,30 @@ def ViewPoll(request):
             ques_choice.append(choices)
             dict[poll.uid] = ques_choice
         # print(dict)
+        def vote_percentage():
+            questqueryset = Question.objects.all()
+            choicequeryset = Choice.objects.all()
+            votequeryset = Vote.objects.all()
+            totalvotes = votequeryset.count()
+    
+            percentage_dict = {}
+            for quest in questqueryset:
+                list_choice = list(choicequeryset.filter(quest.text))
+                percentage_list = []
+                for choice in list_choice:
+                    this_count = votequeryset.filter(choice=choice).count()
+                    percentage = int((this_count/totalvotes)*100)
+                    percentage_list.append(percentage)
+                percentage_dict[quest.text] = percentage_list
+                return percentage_dict
+        percentage = vote_percentage()
+        # print(percentage)
         context = {"dict":dict}
         return render(request, "App/home.html", context)
     except Exception as e:
         print(e)
     return HttpResponse("<h1>Something Went Wrong (:</h1>")
-    
+
         
 class UserRegistrationFormView(View):
     def get(self, request):
@@ -126,3 +149,6 @@ def CreatePoll(request):
             messages.info(request, "You already Posted 5 Polls. You Can Only Post 5 Polls/day(try after 24 hours after the poll is Posted.)")
         context = {"form":fm, "allpolldata":allpolldata}
         return render(request, "App/createpoll.html", context)
+
+
+
