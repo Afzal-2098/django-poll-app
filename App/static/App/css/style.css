@@ -9,6 +9,24 @@
     margin: 0 0 1rem 0;
 }
 
-/* .span{
-    visibility: hidden;
-} */
+.span{
+    float: right !important;
+    text-align: right;
+}
+
+form .form-check:nth-child(even) {
+    background: white;
+  }
+
+form .form-check:nth-child(odd) {
+    
+    background: #f2f2f2;
+  }
+
+  .form-check{
+    padding:10px 20px;
+    margin: 0 !important;
+    padding-left: 30px;
+  }
+
+

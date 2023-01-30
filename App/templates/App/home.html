@@ -11,14 +11,13 @@
             {% endfor %}
          {% endif %}
             </div>
-            <h5>WelCome To Django Poll App</h5>
+            <h5>WelCome To Poll Application</h5>
           </div>
             {% for key, ques_choice in dict.items %}
             <div class=" pollclass px-4 border border-success shadow p-4 bg-light rounded">
+              <p id="id_msg{{forloop.counter}}" class="votingmsg"></p>
               <form action="" id="id_form{{forloop.counter}}">
                 <p class="fw-bold" id="{{key}}">{{ques_choice.0}}</p>
-
-
                 {% for choice in ques_choice.1 %}
                 <div class="form-check mb-2"  id="{{forloop.counter}}input--{{key}}">
                   {% csrf_token %}
@@ -26,12 +25,9 @@
                   <label class="form-check-label" for="{{forloop.counter}}input{{key}}">
                     {{choice}}
                   </label>
-                  <span class="span">span</span>
+                  <span class="span spandata" style="float:right"></span>
                 </div>
                 {% endfor %}
-
-
-
               </form>
             </div>
             {% endfor %}

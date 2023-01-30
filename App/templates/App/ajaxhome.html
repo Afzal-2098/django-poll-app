@@ -3,49 +3,38 @@ $(document).ready(function(){
     $(".form-check-input").click(function(){
         $(this).css("background-color", "green")
         const questid = $(this).parent().siblings().attr("id")
+        $(this).next().css({"color":"green","font-weight":"bold"})
         const optval = $(this).val()
         const inputdiv = $(this).parent()
         updateddata = ""
-        // var quest = $(this).parent().siblings("p").html()
-        var meradata = $(this).parent().find(".span").css({"visibility": "visible"});
-        // tar = $(this).parent().prev().children()
-        // .children(".span").css({"color":"green"})
-        // tar = $(this).parent().find(".span")
-
-        
-        // console.log(tar)
-        console.log(questid)
-        // console.log(optval)
-        // console.log(meradata)
+        var spantag = $(this).parent().siblings("p").parent().find("span")
+        var paratag = $(this).parent().parent().parent().find(".votingmsg")
+        paratag.css({"color":"#538ecd", "font-weight":"700"})
+        console.log(paratag)
         pollanswer = { 'csrfmiddlewaretoken': $("input[name=csrfmiddlewaretoken]").val(), 'questid':questid, 'optval':optval }
         $.ajax({
             url: "{% url 'viewpoll' %}",
             method: "POST",
             data: pollanswer,
             success: function(data){
-                if (data.status_code) {
+                if (data.status_code==201) {
                     console.log(data.percentage);
-                    var dict = data.percentage;
-                    for (var key in dict) {
-                        updateddata += '<input class="form-check-input" type="radio"/>'
-                        '<label class="form-check-label">' + {key} +  '<label><span class="span">' + dict[key] + '</span></div>' 
+                    var arr = data.percentage;
+                    for (let i = 0; i < arr.length; i++) {
+                        console.log(arr[i])
+                        spantag[i].textContent = arr[i]+"%"
+                        
                     }
-                    // const sib = $(inputdiv)
-                    console.log(inputdiv)
-                    $(inputdiv).html(updateddata)
-                //     $("#questid").map(function() {
-                //         return this.innerHTML;
-                // })
-                // $(this).parent().siblings("p").parent().find("span").css({"color":"red"})
+                }
+                if (data.status_code==200) {
+                    console.log(data.message)
+                    paratag.text(data.message)
+                    
+                }
             }
             
-        }});
-        // $(this).parent().siblings("p").parent().find("span").css({"color":"red"})
-        // for (let i = 0; i < arr.length; i++) {
-            
-        // }
-        // console.log(arr)
-
+        });
+        
 });
 });
       

@@ -7,10 +7,18 @@
       <hr>
    
       <form action="" method="post" novalidate class="shadow p-5">
+         {% if request.user.is_authenticated %}
          {% if messages %}
             {% for message in messages %}
                <p {% if message.tags %}class="alert alert-{{message.tags}} mb-5"{% endif %}>{{message}} <a href="{% url 'viewpoll' %}">Go to Polls Page</a></p>
             {% endfor %}
+         {% endif %}
+         {% else %}
+         {% if messages %}
+            {% for message in messages %}
+               <p {% if message.tags %}class="alert alert-{{message.tags}} mb-5"{% endif %}>{{message}}</p>
+            {% endfor %}
+         {% endif %}
          {% endif %}
          {% csrf_token %}
        {% for fm in form %}
