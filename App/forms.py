@@ -3,8 +3,9 @@ from .models import Question, Choice, Vote, User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UsernameField, PasswordResetForm
 from django.core.validators import RegexValidator
 
-class CreatePollForm(forms.ModelForm):
 
+# Form for creating new polls.
+class CreatePollForm(forms.ModelForm):
     option1 = forms.CharField(required=True, label='Option 1', max_length=100, min_length=1, widget=forms.TextInput(attrs={'class': 'form-control'}))
     option2 = forms.CharField(required=True, label='Option 2', max_length=100, min_length=1, widget=forms.TextInput(attrs={'class': 'form-control'}))
     option3 = forms.CharField(required=True, label='Option 3', max_length=100, min_length=1, widget=forms.TextInput(attrs={'class': 'form-control'}))
@@ -18,6 +19,7 @@ class CreatePollForm(forms.ModelForm):
         }
 
 
+# Form for registering new users.
 class UserRegistraionForm(UserCreationForm):
     first_name = forms.CharField(required=True,label='First Name', widget=forms.TextInput(attrs={'class':'form-control'}))
     last_name = forms.CharField(label='Last Name', widget=forms.TextInput(attrs={'class':'form-control'}))
@@ -35,10 +37,12 @@ class UserRegistraionForm(UserCreationForm):
         widget = {'username': forms.TextInput(attrs={'class':'form-control'})}
 
 
+# Form for Logged the user in.
 class LoginForm(AuthenticationForm):
     username = UsernameField(widget=forms.TextInput(attrs={'autofocus':True, 'class':'form-control'}))
     password = forms.CharField(label=("Password"), strip=False, widget=forms.PasswordInput(attrs={'autocomplete':'current-password', 'class':'form-control'}))
 
 
+# Form for resetting the account password. 
 class MyPasswordResetForm(PasswordResetForm):
     email = forms.EmailField(label='Email', max_length=250, widget=forms.EmailInput(attrs={'autofocus':'email', 'class':'form-control'}))

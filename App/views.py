@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 
 
-# Create your views here.
+# View, for rendering polls and handling voting requests.
 @login_required
 def ViewPoll(request):
     if request.method == "POST":
@@ -16,7 +16,12 @@ def ViewPoll(request):
         optval = request.POST.get("optval")
         requestuser = User.objects.get(username=request.user)
         quest = Question.objects.get(uid=questid)
-        option = Choice.objects.get(choice_text=optval)
+        # option = Choice.objects.get(choice_text=optval)
+        optionlist = Choice.objects.filter(question=questid)
+        for option in optionlist:
+            if optval == option.choice_text:
+                optval = option.choice_text
+                break
         try:
             votequery = Vote.objects.filter(user=request.user).get(question=quest)
             msg = "You Already Voted in this Poll."
@@ -27,6 +32,7 @@ def ViewPoll(request):
                 vote = Vote(user=requestuser, question=quest, choice=option)
                 vote.save()
                 def vote_percentage():
+                    '''calculating voting percentage'''
                     votequeryset = Vote.objects.filter(question=quest)
                     totalvotes = votequeryset.count()
                     list_choice = list(Choice.objects.filter(question=quest))
@@ -58,7 +64,8 @@ def ViewPoll(request):
         messages.error(request, "No Polls available right now.")
         return render(request, "App/home.html")
     
-        
+
+# View, For registering the new users. 
 class UserRegistrationFormView(View):
     def get(self, request):
         form = UserRegistraionForm()
@@ -78,6 +85,7 @@ class UserRegistrationFormView(View):
         return render(request, "App/userregistration.html", {'form':form})
 
 
+# This view renders the user profile.
 @login_required
 def UserProfile(request):
     if request.user.is_authenticated:
@@ -87,7 +95,7 @@ def UserProfile(request):
         return render(request, "App/userprofile.html", context)
 
 
-
+# handles requests for creating the new polls.
 def CreatePoll(request):
     if request.user.is_authenticated:
         fm = CreatePollForm()

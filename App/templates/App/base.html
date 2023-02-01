@@ -30,6 +30,7 @@
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="profileDropdown">
                   <li><a class="dropdown-item" href="{% url 'userprofile' %}">Profile</a></li>
+                  {% comment %} <li><a class="dropdown-item" href="{% url 'reset_password' %}">Reset Password</a></li> {% endcomment %}
                   <li><a class="dropdown-item" href="{% url 'userlogout' %}">Logout</a></li>
                 </ul>
               </li>
